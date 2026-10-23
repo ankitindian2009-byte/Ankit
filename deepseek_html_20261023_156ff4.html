@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FFF8F4" />
+    <meta
+      name="description"
+      content="A little world for Aarya — a small, handmade corner of the internet made with love."
+    />
+    <title>A Little World for Aarya ♡</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%92%97%3C/text%3E%3C/svg%3E"
+    />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+          "framer-motion": "https://esm.sh/framer-motion@11.11.17?deps=react@18.3.1,react-dom@18.3.1",
+          "lucide-react": "https://esm.sh/lucide-react@0.454.0?deps=react@18.3.1"
+        }
+      }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+    <style>
+      :root {
+        --cream: #fff8f4;
+        --pink: #ffe1e9;
+        --rose: #c66f91;
+        --lavender: #eae7ff;
+        --peach: #ffe8d9;
+        --sage: #eaf1e3;
+        --plum: #50364e;
+        --plum-soft: #6a4d67;
+        --plum-line: rgba(80, 54, 78, 0.13);
+        --card: #fffdfb;
+
+        --font-display: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+        --font-body: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        --font-hand: 'Caveat', 'Segoe Script', cursive;
+
+        --radius-lg: 26px;
+        --shadow-card: 0 26px 50px -34px rgba(80, 54, 78, 0.55),
+          0 3px 12px -8px rgba(80, 54, 78, 0.22);
+        --shadow-btn: 0 8px 18px -14px rgba(80, 54, 78, 0.65);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      html { min-height: 100%; background: var(--cream); -webkit-text-size-adjust: 100%; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-body);
+        font-size: 16px;
+        color: var(--plum);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-color: var(--cream);
+        background-image:
+          radial-gradient(1100px 620px at 8% -12%, #ffeaf1 0%, transparent 62%),
+          radial-gradient(900px 520px at 102% -4%, #efebff 0%, transparent 58%),
+          radial-gradient(900px 700px at 46% 112%, #fff0e2 0%, transparent 62%),
+          radial-gradient(700px 500px at 92% 96%, #eef4e8 0%, transparent 60%);
+      }
+
+      #root { position: relative; z-index: 1; }
+
+      .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+      }
+
+      :focus-visible {
+        outline: 2.5px solid var(--rose);
+        outline-offset: 3px;
+        border-radius: 10px;
+      }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        min-height: 46px; padding: 0.78rem 1.4rem;
+        font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.01em;
+        color: var(--plum); background: rgba(255, 255, 255, 0.92);
+        border: 1px solid var(--plum-line); border-radius: 999px;
+        box-shadow: var(--shadow-btn); cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.2s ease,
+          background 0.2s ease, opacity 0.2s ease;
+      }
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 26px -16px rgba(80, 54, 78, 0.6);
+        background: #ffffff;
+      }
+      .btn:active:not(:disabled) { transform: translateY(0) scale(0.965); }
+      .btn:disabled { opacity: 0.38; cursor: not-allowed; box-shadow: none; }
+      .btn-primary {
+        color: #4c2f47;
+        background: linear-gradient(135deg, #ffdbe6 0%, #ffc9db 100%);
+        border-color: rgba(198, 111, 145, 0.38);
+      }
+      .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #ffd2e0 0%, #ffc0d5 100%);
+      }
+
+      .icon-btn {
+        display: grid; place-items: center; width: 44px; height: 44px;
+        color: var(--plum); background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--plum-line); border-radius: 50%; cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.4), background 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .icon-btn:hover {
+        transform: translateY(-2px); background: #ffffff;
+        box-shadow: 0 10px 20px -16px rgba(80, 54, 78, 0.7);
+      }
+      .icon-btn:active { transform: scale(0.94); }
+      .icon-btn[aria-pressed='true'] {
+        background: var(--lavender); border-color: rgba(122, 107, 181, 0.35);
+      }
+
+      /* INTRO */
+      .intro {
+        position: relative; display: flex; align-items: center; justify-content: center;
+        min-height: 100vh; min-height: 100dvh; padding: clamp(1.6rem, 5vw, 3rem) 1.15rem;
+        text-align: center;
+      }
+      .intro-inner { width: min(620px, 100%); display: flex; flex-direction: column; align-items: center; }
+      .eyebrow {
+        margin: 0 0 0.9rem; font-family: var(--font-hand); font-size: 1.28rem;
+        letter-spacing: 0.02em; color: var(--rose);
+      }
+      .intro-title {
+        margin: 0; font-family: var(--font-display); font-weight: 600;
+        font-size: clamp(1.9rem, 6.2vw, 3.05rem); line-height: 1.16; letter-spacing: -0.015em;
+        color: var(--plum);
+      }
+      .intro-heart {
+        display: inline-block; color: var(--rose);
+        animation: gentlePulse 3.4s ease-in-out infinite;
+      }
+      .intro-sub {
+        margin: 1.15rem 0 0; font-size: clamp(1rem, 2.8vw, 1.1rem);
+        line-height: 1.7; color: var(--plum-soft); max-width: 34ch;
+      }
+      .intro-sub-small {
+        margin-top: 0.35rem; font-size: clamp(0.92rem, 2.6vw, 1rem); color: #7c5f78;
+      }
+      .intro-btn { margin-top: 0.6rem; }
+
+      .envelope {
+        position: relative; display: block; width: min(300px, 76vw); aspect-ratio: 3 / 2;
+        margin: clamp(1.6rem, 5vw, 2.4rem) auto 1.5rem; padding: 0; background: none; border: 0;
+        cursor: pointer; perspective: 900px;
+        filter: drop-shadow(0 22px 30px rgba(80, 54, 78, 0.16));
+        transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+      }
+      .envelope:hover:not(.is-open) { transform: translateY(-9px) rotate(-1.6deg); }
+      .envelope:focus-visible { outline: 3px solid var(--rose); outline-offset: 12px; border-radius: 16px; }
+      .envelope.is-open { cursor: default; }
+      .env-back, .env-letter, .env-pocket, .env-flap { position: absolute; }
+      .env-back {
+        inset: 0; z-index: 1; border-radius: 12px;
+        background: linear-gradient(160deg, #ffedf3 0%, #ffd9e5 100%);
+      }
+      .env-letter {
+        left: 8%; right: 8%; bottom: 10%; z-index: 3;
+        display: flex; flex-direction: column; gap: 8px; height: 62%;
+        padding: 14px 16px; text-align: left; background: var(--card);
+        border-radius: 8px 8px 4px 4px;
+        box-shadow: 0 -5px 16px -10px rgba(80, 54, 78, 0.45);
+        transform: translateY(0); transition: transform 0.9s cubic-bezier(0.34, 1.25, 0.4, 1);
+      }
+      .envelope.is-open .env-letter { transform: translateY(-74%); transition-delay: 0.32s; }
+      .env-line { display: block; height: 5px; border-radius: 999px; background: rgba(198, 111, 145, 0.22); }
+      .env-line.short { width: 72%; }
+      .env-line.shorter { width: 46%; }
+      .env-sign { margin-top: auto; font-family: var(--font-hand); font-size: 1.05rem; color: var(--rose); }
+      .env-pocket {
+        inset: 0; z-index: 4; border-radius: 12px;
+        background: linear-gradient(200deg, #ffd6e4 0%, #ffc4d8 100%);
+        clip-path: polygon(0 0, 50% 42%, 100% 0, 100% 100%, 0 100%);
+      }
+      .env-flap {
+        top: 0; left: 0; right: 0; z-index: 5; height: 58%;
+        background: linear-gradient(180deg, #ffdde8 0%, #ffc0d4 100%);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+        border-radius: 12px 12px 0 0; transform-origin: top center;
+        transition: transform 0.8s cubic-bezier(0.55, 0.06, 0.3, 1);
+      }
+      .envelope.is-open .env-flap { z-index: 2; transform: rotateX(-180deg); }
+      .env-seal {
+        position: absolute; top: 52%; left: 50%; z-index: 6;
+        display: grid; place-items: center; width: 46px; height: 46px;
+        font-size: 1.2rem; color: #fff3f7;
+        background: radial-gradient(circle at 35% 28%, #e58ba9 0%, #c66f91 78%);
+        border-radius: 50%; box-shadow: 0 6px 12px -6px rgba(80, 54, 78, 0.65);
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease, transform 0.35s ease;
+      }
+      .envelope.is-open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
+
+      /* STORY */
+      .story {
+        display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh;
+        width: min(900px, 100%); margin: 0 auto;
+        padding: clamp(0.9rem, 3vw, 1.6rem) clamp(0.9rem, 4vw, 2rem) clamp(2.4rem, 6vw, 3.4rem);
+      }
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        width: min(720px, 100%); margin: 0 auto;
+      }
+      .topbar-note {
+        margin: 0; font-family: var(--font-hand); font-size: 1.35rem;
+        color: var(--rose); opacity: 0.85;
+      }
+
+      .progress {
+        display: flex; align-items: center; gap: 0.85rem;
+        width: min(720px, 100%); margin: 1rem auto 0;
+      }
+      .progress-count {
+        flex: 0 0 auto; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em;
+        color: var(--plum-soft); font-variant-numeric: tabular-nums;
+      }
+      .progress-track {
+        position: relative; flex: 1 1 auto; height: 4px; overflow: hidden;
+        background: rgba(80, 54, 78, 0.1); border-radius: 999px;
+      }
+      .progress-fill {
+        position: absolute; inset: 0 auto 0 0; display: block; height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #f3b9cd 0%, #c66f91 55%, #b18fd6 100%);
+      }
+
+      .stage {
+        position: relative; display: flex; justify-content: center;
+        width: min(720px, 100%); min-height: clamp(340px, 54vh, 520px);
+        margin: 1.35rem auto 0;
+      }
+
+      .story-card {
+        position: relative; isolation: isolate; width: 100%;
+        padding: clamp(1.5rem, 4.4vw, 2.6rem);
+        background: linear-gradient(172deg, #fffdfb 0%, #fff7f3 100%);
+        border: 1px solid var(--plum-line); border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card); color: var(--plum);
+      }
+      .story-card::before {
+        content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+        background:
+          radial-gradient(115% 85% at 102% -4%, var(--accent-bg) 0%, transparent 58%),
+          radial-gradient(95% 70% at -6% 104%, var(--accent-bg) 0%, transparent 62%);
+        opacity: 0.6; pointer-events: none;
+      }
+
+      .accent-pink     { --accent-bg: #ffe1e9; --accent-ink: #c66f91; }
+      .accent-lavender { --accent-bg: #eae7ff; --accent-ink: #8072bb; }
+      .accent-peach    { --accent-bg: #ffe8d9; --accent-ink: #cc8a5c; }
+      .accent-sage     { --accent-bg: #eaf1e3; --accent-ink: #7d9470; }
+
+      .washi {
+        position: absolute; top: -10px; left: clamp(1.2rem, 6vw, 2.6rem);
+        width: 96px; height: 24px;
+        background:
+          repeating-linear-gradient(135deg,
+            rgba(255, 255, 255, 0.65) 0 6px,
+            rgba(255, 255, 255, 0.25) 6px 12px),
+          var(--accent-bg);
+        border-radius: 3px; opacity: 0.9; transform: rotate(-3deg);
+        box-shadow: 0 2px 6px -4px rgba(80, 54, 78, 0.5);
+      }
+
+      .card-doodle {
+        width: clamp(66px, 16vw, 84px); height: clamp(66px, 16vw, 84px);
+        margin-bottom: 0.4rem; color: var(--accent-ink);
+        cursor: default; transform-origin: 50% 90%;
+        transition: transform 0.3s ease;
+      }
+      .card-doodle:hover { animation: doodleWiggle 0.75s ease-in-out; }
+      .card-doodle .doodle { display: block; width: 100%; height: 100%; overflow: visible; }
+
+      .card-title {
+        margin: 0.15rem 0 0; font-family: var(--font-display);
+        font-size: clamp(1.45rem, 4.4vw, 2.05rem); font-weight: 600;
+        line-height: 1.25; letter-spacing: -0.012em; color: var(--plum);
+        text-wrap: balance;
+      }
+      .title-underline {
+        display: block; width: min(160px, 42%); height: 12px;
+        margin: 0.3rem 0 1.15rem; color: var(--accent-ink); overflow: visible;
+      }
+      .card-body p {
+        margin: 0 0 0.85rem; font-size: clamp(0.98rem, 2.7vw, 1.06rem);
+        line-height: 1.78; color: #46303f; text-wrap: pretty;
+      }
+      .card-body p:last-child { margin-bottom: 0; }
+      .card-signature {
+        margin-top: 1.1rem !important; font-family: var(--font-hand);
+        font-size: 1.4rem !important; line-height: 1.4 !important; color: var(--rose);
+      }
+
+      .surprise { position: relative; margin-top: 1.35rem; }
+      .surprise-trigger {
+        display: inline-flex; align-items: center; gap: 0.45rem;
+        padding: 0.5rem 0.95rem; font-family: var(--font-body);
+        font-size: 0.82rem; font-weight: 800; letter-spacing: 0.02em;
+        color: var(--accent-ink); background: rgba(255, 255, 255, 0.7);
+        border: 1px dashed currentColor; border-radius: 999px; cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.4), background 0.2s ease;
+      }
+      .surprise-trigger:hover { transform: translateY(-2px) rotate(-1deg); background: #ffffff; }
+      .surprise-trigger:active { transform: scale(0.96); }
+      .surprise-trigger svg { transition: transform 0.35s ease; }
+      .surprise-trigger[aria-expanded='true'] svg { transform: rotate(72deg) scale(1.1); }
+      .surprise-pop {
+        margin-top: 0.7rem; padding: 0.9rem 1.1rem;
+        font-family: var(--font-hand); font-size: 1.22rem; line-height: 1.5;
+        color: #5c3f58; background: #fffdf9;
+        border: 1px solid var(--plum-line); border-left: 3px solid var(--accent-ink);
+        border-radius: 4px 16px 16px 16px;
+        box-shadow: 0 12px 24px -22px rgba(80, 54, 78, 0.8);
+        transform-origin: top left;
+      }
+
+      .final-actions {
+        display: flex; flex-wrap: wrap; gap: 0.7rem;
+        margin-top: 1.6rem; padding-top: 1.35rem;
+        border-top: 1px dashed var(--plum-line);
+      }
+
+      .card-nav {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+        width: min(720px, 100%); margin: 1.2rem auto 0;
+      }
+      .nav-spacer { flex: 1 1 auto; }
+
+      .chapter-petals {
+        position: absolute; inset: 0; z-index: 0; overflow: hidden;
+        pointer-events: none; border-radius: var(--radius-lg);
+      }
+      .chapter-petal {
+        position: absolute; top: -30px; display: block;
+        background: radial-gradient(circle at 30% 25%, #ffd6e3 0%, #f2b3c9 70%);
+        border-radius: 60% 60% 55% 55% / 75% 75% 45% 45%;
+        opacity: 0.55;
+      }
+
+      .floating-decorations {
+        position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+      }
+      .float-item {
+        position: absolute; display: block; opacity: 0.24; color: var(--rose);
+        animation-name: driftFloat; animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite; will-change: transform;
+      }
+      .float-item.float-sparkle { color: #b39ddb; opacity: 0.22; }
+      .float-item svg { display: block; width: 100%; height: 100%; }
+
+      .cursor-sparkles { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+      .cursor-sparkle {
+        position: absolute; display: block;
+        background: radial-gradient(circle, #ffd3e2 0%, rgba(198, 111, 145, 0) 72%);
+        border-radius: 50%;
+      }
+
+      .overlay {
+        position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+        padding: 1.2rem; background: rgba(80, 54, 78, 0.24);
+        backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      }
+
+      .keepsake {
+        position: relative; width: min(430px, 100%);
+        padding: 2.3rem 1.7rem 1.9rem; text-align: center;
+        background: linear-gradient(172deg, #fffdfb 0%, #fff3ee 100%);
+        border: 1px solid var(--plum-line); border-radius: 22px;
+        box-shadow: 0 30px 60px -34px rgba(80, 54, 78, 0.6);
+      }
+      .keepsake-tape {
+        position: absolute; top: -11px; left: 50%; width: 84px; height: 22px;
+        background:
+          repeating-linear-gradient(135deg,
+            rgba(255, 255, 255, 0.6) 0 6px,
+            rgba(255, 255, 255, 0.2) 6px 12px),
+          var(--pink);
+        border-radius: 3px; transform: translateX(-50%) rotate(-2deg); opacity: 0.95;
+      }
+      .keepsake-heart { color: var(--rose); margin-bottom: 0.4rem; }
+      .keepsake-title {
+        margin: 0 0 0.75rem; font-family: var(--font-display);
+        font-size: 1.32rem; font-weight: 600; color: var(--plum);
+      }
+      .keepsake-text {
+        margin: 0 0 0.9rem; font-size: 1rem; line-height: 1.75; color: #46303f;
+      }
+      .keepsake-sign {
+        margin: 0 0 1.35rem; font-family: var(--font-hand);
+        font-size: 1.25rem; color: var(--rose);
+      }
+
+      .dialog {
+        width: min(400px, 100%); padding: 1.7rem 1.5rem 1.5rem;
+        text-align: center; background: var(--card);
+        border: 1px solid var(--plum-line); border-radius: 20px;
+        box-shadow: 0 30px 60px -34px rgba(80, 54, 78, 0.6);
+      }
+      .dialog h2 {
+        margin: 0 0 0.55rem; font-family: var(--font-display);
+        font-size: 1.22rem; font-weight: 600; color: var(--plum);
+      }
+      .dialog-text {
+        margin: 0 0 1.3rem; font-size: 0.95rem; line-height: 1.65; color: var(--plum-soft);
+      }
+      .dialog-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+
+      @keyframes driftFloat {
+        0%   { transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg)); }
+        50%  { transform: translate3d(12px, -30px, 0) rotate(calc(var(--tilt, 0deg) + 10deg)); }
+        100% { transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg)); }
+      }
+      @keyframes gentlePulse {
+        0%, 100% { transform: scale(1); opacity: 0.95; }
+        50%      { transform: scale(1.12); opacity: 1; }
+      }
+      @keyframes doodleWiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25%      { transform: rotate(-6deg) translateY(-2px); }
+        55%      { transform: rotate(5deg) translateY(-3px); }
+        80%      { transform: rotate(-2deg); }
+      }
+
+      @media (max-width: 560px) {
+        .story-card { border-radius: 22px; }
+        .washi { width: 74px; height: 20px; }
+        .card-nav .btn { flex: 1 1 auto; padding: 0.78rem 1rem; font-size: 0.9rem; }
+        .nav-spacer { display: none; }
+        .final-actions .btn { width: 100%; }
+        .topbar-note { font-size: 1.15rem; }
+      }
+      @media (max-width: 380px) {
+        .progress { gap: 0.6rem; }
+        .progress-count { font-size: 0.72rem; }
+      }
+
+      .reduce-motion *,
+      .reduce-motion *::before,
+      .reduce-motion *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module" data-presets="react">
+      import React, {
+        useCallback,
+        useEffect,
+        useId,
+        useMemo,
+        useRef,
+        useState,
+      } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { AnimatePresence, motion } from 'framer-motion';
+      import { Gift, Heart, Home, RotateCcw, Sparkles, Star } from 'lucide-react';
+
+      /* ===========================================================
+         DATA — all 16 pages
+         =========================================================== */
+      const pages = [
+        {
+          id: 1,
+          title: 'Hey, Aarya ♡',
+          accent: 'pink',
+          doodle: 'envelope',
+          paragraphs: [
+            'Heyyy, Aarya! ♡',
+            'I made this little corner of the world just for you. I know you’ve been feeling a little low lately, so I wanted to leave you a few words you can come back to whenever you need them.',
+            'No pressure to smile. Just a little reminder that someone is rooting for you.',
+          ],
+        },
+        {
+          id: 2,
+          title: 'It’s okay not to be okay.',
+          accent: 'lavender',
+          doodle: 'cloud',
+          paragraphs: [
+            'You don’t have to feel happy every day. Some days are quiet, confusing, tiring, or just a little harder than usual.',
+            'You don’t need to explain every feeling perfectly. It’s okay to just feel what you feel. ♡',
+          ],
+        },
+        {
+          id: 3,
+          title: 'You’re more than today.',
+          accent: 'peach',
+          doodle: 'flower',
+          paragraphs: [
+            'One difficult day doesn’t define you, Aarya.',
+            'You’re still the same kind, lovely, interesting person, even when you don’t feel like your usual self. Your worth doesn’t disappear just because your smile takes a little break.',
+          ],
+        },
+        {
+          id: 4,
+          title: 'Please be gentle with yourself.',
+          accent: 'sage',
+          doodle: 'petals',
+          paragraphs: [
+            'You’re allowed to rest.',
+            'You’re allowed to take your time.',
+            'You don’t have to solve every problem today or have your whole life figured out.',
+            'Take a breath, unclench your shoulders, and give yourself some of the kindness you give other people. ♡',
+          ],
+        },
+        {
+          id: 5,
+          title: 'This feeling can change.',
+          accent: 'pink',
+          doodle: 'sun',
+          paragraphs: [
+            'Sometimes a few difficult days can make everything seem heavier than it really is. You don’t need to predict the future based on how today feels.',
+            'Take things one little moment at a time. There’s no deadline for feeling better.',
+          ],
+        },
+        {
+          id: 6,
+          title: 'Tiny things count, too.',
+          accent: 'lavender',
+          doodle: 'cozy',
+          paragraphs: [
+            'Drink some water. Eat something you like. Listen to a song that feels like a hug. Watch something silly. Sit in the sunshine for a bit.',
+            'You don’t have to do something extraordinary to deserve a peaceful moment. Little comforts count, too. ♡',
+          ],
+          surprise:
+            'p.s. if today only allows one tiny thing — a glass of water absolutely counts. ♡',
+        },
+        {
+          id: 7,
+          title: 'You can talk to me.',
+          accent: 'peach',
+          doodle: 'chat',
+          paragraphs: [
+            'If you ever feel like talking, I’m here to listen.',
+            'You don’t need to find the perfect words, and you don’t need to pretend that everything is fine.',
+            'And if you don’t feel like talking, that’s okay too. I’ll respect that. You don’t have to carry a conversation just to make me happy. ♡',
+          ],
+        },
+        {
+          id: 8,
+          title: 'You are not a burden.',
+          accent: 'sage',
+          doodle: 'bear',
+          paragraphs: [
+            'You don’t have to be funny, cheerful, helpful, or available all the time to deserve care.',
+            'You can have quiet days. You can need space. You can ask for help.',
+            'You matter because you’re you, not because of what you do for everyone else.',
+          ],
+        },
+        {
+          id: 9,
+          title: 'A little wish for you.',
+          accent: 'pink',
+          doodle: 'sparkles',
+          paragraphs: [
+            'I hope you have a day that feels lighter.',
+            'I hope a random song makes you smile, your favourite food tastes extra good, and something unexpectedly lovely happens.',
+            'And even if today is ordinary, I hope there’s at least one small moment that feels nice. ♡',
+          ],
+        },
+        {
+          id: 10,
+          title: 'Look how far you’ve come.',
+          accent: 'lavender',
+          doodle: 'plant',
+          paragraphs: [
+            'You’ve already made it through days you didn’t know how to handle at first.',
+            'You don’t have to call yourself strong every minute. But please give yourself credit for continuing, learning, and trying in your own way.',
+            'That counts for more than you think.',
+          ],
+        },
+        {
+          id: 11,
+          title: 'The world is better with you in it.',
+          accent: 'peach',
+          doodle: 'hearts',
+          paragraphs: [
+            'Your presence matters, Aarya.',
+            'The little things about you, your thoughts, your laugh, your kindness, and the way you see the world are worth appreciating.',
+            'You don’t need to be extraordinary every day to make a difference. Being yourself matters. ♡',
+          ],
+        },
+        {
+          id: 12,
+          title: 'Your story isn’t finished.',
+          accent: 'sage',
+          doodle: 'rainbow',
+          paragraphs: [
+            'Right now is one part of your story, not the whole thing.',
+            'There are songs you haven’t heard yet, places you haven’t seen, memories you haven’t made, and ordinary days that might become favourite memories later.',
+            'You don’t need to know what comes next. Just leave a little room for it.',
+          ],
+        },
+        {
+          id: 13,
+          title: 'Bloom at your own pace.',
+          accent: 'pink',
+          doodle: 'garden',
+          paragraphs: [
+            'Some flowers bloom early, some bloom later, and some take their time.',
+            'You don’t need to compare your progress with anyone else’s. You are allowed to grow slowly, change your mind, rest, and figure things out at your own pace. ♡',
+          ],
+          surprise:
+            'p.s. you’re not behind. there is no schedule you are failing to keep. ♡',
+        },
+        {
+          id: 14,
+          title: 'A small thank-you.',
+          accent: 'lavender',
+          doodle: 'gift',
+          paragraphs: [
+            'I’m glad I got to know you, Aarya.',
+            'Thank you for being yourself and for being a part of the world around you. I hope you get back some of the kindness and warmth you give to others.',
+            'You deserve good things, gentle friendships, and moments when you feel appreciated.',
+          ],
+        },
+        {
+          id: 15,
+          title: 'One thing I hope you remember.',
+          accent: 'peach',
+          doodle: 'glowheart',
+          paragraphs: [
+            'You don’t need to earn rest.',
+            'You don’t need to hide every difficult feeling.',
+            'You don’t need to be perfect to be loved and appreciated.',
+            'You’re allowed to be a work in progress and still be someone worth caring about.',
+            'Please remember that, okay? ♡',
+          ],
+        },
+        {
+          id: 16,
+          title: 'One last little note ♡',
+          accent: 'sage',
+          doodle: 'letter',
+          paragraphs: [
+            'Hey, Aarya.',
+            'If you remember just one thing from this little website, let it be this:',
+            'You matter on the happy days and the hard ones.',
+            'You deserve kindness, including from yourself.',
+            'You don’t have to figure everything out right now.',
+            'Take your time. Keep being you.',
+            'I’m rooting for you, always. ♡',
+          ],
+          signature: '— Your friend',
+        },
+      ];
+      const TOTAL_PAGES = pages.length;
+
+      /* ===========================================================
+         SVG path helpers
+         =========================================================== */
+      const sparklePath = (cx, cy, r) =>
+        `M${cx} ${cy - r} Q${cx + r * 0.22} ${cy - r * 0.22} ${cx + r} ${cy} ` +
+        `Q${cx + r * 0.22} ${cy + r * 0.22} ${cx} ${cy + r} ` +
+        `Q${cx - r * 0.22} ${cy + r * 0.22} ${cx - r} ${cy} ` +
+        `Q${cx - r * 0.22} ${cy - r * 0.22} ${cx} ${cy - r} Z`;
+
+      const heartPath = (cx, cy, s) =>
+        `M${cx} ${cy + s} ` +
+        `C${cx - s * 1.45} ${cy - s * 0.35} ${cx - s * 0.62} ${cy - s * 1.25} ${cx} ${cy - s * 0.38} ` +
+        `C${cx + s * 0.62} ${cy - s * 1.25} ${cx + s * 1.45} ${cy - s * 0.35} ${cx} ${cy + s} Z`;
+
+      const CLOUD_PATH =
+        'M24 62 a13 13 0 0 1 2 -26 a17 17 0 0 1 32 -7 a12 12 0 0 1 14 33 z';
+
+      /* ===========================================================
+         Doodles
+         =========================================================== */
+      const doodles = {
+        envelope: (
+          <>
+            <rect x="15" y="36" width="70" height="48" rx="8" />
+            <path d="M15 44 L50 66 L85 44" />
+            <path d={heartPath(79, 22, 8)} fill="currentColor" opacity=".35" stroke="none" />
+            <path d={heartPath(79, 22, 8)} />
+            <path d="M22 30 q-4 -8 3 -11 M28 32 q-3 -6 2 -8" opacity=".55" />
+          </>
+        ),
+        cloud: (
+          <>
+            <path d={CLOUD_PATH} />
+            <path d="M40 45 q3 4 6 0" />
+            <path d="M56 45 q3 4 6 0" />
+            <path d={sparklePath(34, 76, 5)} fill="currentColor" opacity=".45" stroke="none" />
+            <path d={sparklePath(50, 84, 6.5)} fill="currentColor" opacity=".6" stroke="none" />
+            <path d={sparklePath(66, 76, 5)} fill="currentColor" opacity=".45" stroke="none" />
+          </>
+        ),
+        flower: (
+          <>
+            <path d="M50 52 v34" />
+            <path d="M50 72 q-14 0 -14 -12 q14 0 14 12" fill="currentColor" opacity=".18" />
+            <path d="M50 72 q-14 0 -14 -12 q14 0 14 12" />
+            <circle cx="50" cy="19" r="9" />
+            <circle cx="64" cy="29" r="9" />
+            <circle cx="59" cy="46" r="9" />
+            <circle cx="41" cy="46" r="9" />
+            <circle cx="36" cy="29" r="9" />
+            <circle cx="50" cy="34" r="10" fill="currentColor" opacity=".18" />
+            <circle cx="50" cy="34" r="10" />
+            <circle cx="46" cy="31" r="1.7" fill="currentColor" stroke="none" />
+            <circle cx="54" cy="31" r="1.7" fill="currentColor" stroke="none" />
+            <path d="M46 37 q4 4 8 0" />
+          </>
+        ),
+        petals: (
+          <>
+            <ellipse cx="36" cy="32" rx="7" ry="12" transform="rotate(-22 36 32)" fill="currentColor" opacity=".22" />
+            <ellipse cx="36" cy="32" rx="7" ry="12" transform="rotate(-22 36 32)" />
+            <ellipse cx="64" cy="52" rx="7" ry="12" transform="rotate(24 64 52)" fill="currentColor" opacity=".22" />
+            <ellipse cx="64" cy="52" rx="7" ry="12" transform="rotate(24 64 52)" />
+            <ellipse cx="44" cy="76" rx="6" ry="10" transform="rotate(-10 44 76)" fill="currentColor" opacity=".16" />
+            <ellipse cx="44" cy="76" rx="6" ry="10" transform="rotate(-10 44 76)" />
+            <path d="M76 26 q6 8 2 14" opacity=".5" />
+          </>
+        ),
+        sun: (
+          <>
+            <circle cx="38" cy="36" r="15" fill="currentColor" opacity=".22" />
+            <circle cx="38" cy="36" r="15" />
+            <path d="M38 12 V3 M38 60 v8 M14 36 H5 M62 36 h8 M21 19 l-6 -6 M55 53 l6 6 M55 19 l6 -6 M21 53 l-6 6" />
+            <g transform="translate(26 46) scale(0.62)"><path d={CLOUD_PATH} /></g>
+            <path d={sparklePath(80, 24, 5)} fill="currentColor" opacity=".55" stroke="none" />
+          </>
+        ),
+        cozy: (
+          <>
+            <path d="M26 46 h40 v22 a14 14 0 0 1 -14 14 h-12 a14 14 0 0 1 -14 -14 z" fill="currentColor" opacity=".16" />
+            <path d="M26 46 h40 v22 a14 14 0 0 1 -14 14 h-12 a14 14 0 0 1 -14 -14 z" />
+            <path d="M66 52 h6 a9 9 0 0 1 0 18 h-6" />
+            <path d="M38 36 q-7 -9 0 -16 M52 36 q-7 -9 0 -16" opacity=".65" />
+            <path d={sparklePath(82, 26, 6)} fill="currentColor" opacity=".6" stroke="none" />
+            <path d={sparklePath(18, 30, 4)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+        chat: (
+          <>
+            <path d="M16 26 h44 a8 8 0 0 1 8 8 v16 a8 8 0 0 1 -8 8 h-24 l-12 10 v-10 h-8 a8 8 0 0 1 -8 -8 v-16 a8 8 0 0 1 8 -8 z" />
+            <path d="M28 40 h24 M28 50 h14" opacity=".8" />
+            <path d={heartPath(74, 72, 11)} fill="currentColor" opacity=".35" stroke="none" />
+            <path d={heartPath(74, 72, 11)} />
+          </>
+        ),
+        bear: (
+          <>
+            <circle cx="26" cy="28" r="11" />
+            <circle cx="74" cy="28" r="11" />
+            <circle cx="50" cy="54" r="26" fill="currentColor" opacity=".14" />
+            <circle cx="50" cy="54" r="26" />
+            <circle cx="41" cy="50" r="2.6" fill="currentColor" stroke="none" />
+            <circle cx="59" cy="50" r="2.6" fill="currentColor" stroke="none" />
+            <ellipse cx="50" cy="62" rx="7" ry="5" />
+            <path d="M50 67 v4 M50 71 q-5 5 -9 1 M50 71 q5 5 9 1" />
+          </>
+        ),
+        sparkles: (
+          <>
+            <path d={sparklePath(50, 44, 21)} fill="currentColor" opacity=".22" stroke="none" />
+            <path d={sparklePath(50, 44, 21)} />
+            <path d={sparklePath(26, 74, 9)} fill="currentColor" opacity=".45" stroke="none" />
+            <path d={sparklePath(74, 72, 7)} fill="currentColor" opacity=".45" stroke="none" />
+            <path d={sparklePath(78, 26, 5)} fill="currentColor" opacity=".5" stroke="none" />
+            <path d={sparklePath(22, 28, 4)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+        plant: (
+          <>
+            <path d="M32 62 h36 l-5 24 a6 6 0 0 1 -6 5 h-14 a6 6 0 0 1 -6 -5 z" fill="currentColor" opacity=".16" />
+            <path d="M32 62 h36 l-5 24 a6 6 0 0 1 -6 5 h-14 a6 6 0 0 1 -6 -5 z" />
+            <path d="M50 62 V30" />
+            <path d="M50 46 q-17 0 -17 -15 q17 0 17 15" fill="currentColor" opacity=".2" />
+            <path d="M50 46 q-17 0 -17 -15 q17 0 17 15" />
+            <path d="M50 38 q17 0 17 -15 q-17 0 -17 15" fill="currentColor" opacity=".2" />
+            <path d="M50 38 q17 0 17 -15 q-17 0 -17 15" />
+          </>
+        ),
+        hearts: (
+          <>
+            <path d={heartPath(42, 52, 21)} fill="currentColor" opacity=".22" stroke="none" />
+            <path d={heartPath(42, 52, 21)} />
+            <path d={heartPath(70, 66, 14)} fill="currentColor" opacity=".4" stroke="none" />
+            <path d={heartPath(70, 66, 14)} />
+            <path d={sparklePath(74, 24, 6)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+        rainbow: (
+          <>
+            <path d="M14 74 a36 36 0 0 1 72 0" />
+            <path d="M24 74 a26 26 0 0 1 52 0" opacity=".7" />
+            <path d="M34 74 a16 16 0 0 1 32 0" opacity=".4" />
+            <path d="M6 80 h10 M84 80 h10" />
+            <path d={sparklePath(80, 26, 6)} fill="currentColor" opacity=".6" stroke="none" />
+            <path d={sparklePath(16, 34, 4)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+        garden: (
+          <>
+            <path d="M14 84 h72" />
+            <path d="M32 84 V58 M50 84 V46 M68 84 V64" />
+            <circle cx="32" cy="52" r="7" fill="currentColor" opacity=".22" />
+            <circle cx="32" cy="52" r="7" />
+            <circle cx="50" cy="39" r="8" fill="currentColor" opacity=".22" />
+            <circle cx="50" cy="39" r="8" />
+            <circle cx="68" cy="57" r="6" fill="currentColor" opacity=".22" />
+            <circle cx="68" cy="57" r="6" />
+            <path d="M20 22 q-4 -8 3 -11" opacity=".45" />
+          </>
+        ),
+        gift: (
+          <>
+            <rect x="20" y="46" width="60" height="38" rx="6" fill="currentColor" opacity=".16" />
+            <rect x="20" y="46" width="60" height="38" rx="6" />
+            <rect x="15" y="33" width="70" height="16" rx="5" />
+            <path d="M50 33 v51" />
+            <path d="M50 33 c-6 -15 -22 -15 -22 -4 c0 7 11 6 22 4 z" />
+            <path d="M50 33 c6 -15 22 -15 22 -4 c0 7 -11 6 -22 4 z" />
+            <path d={sparklePath(84, 22, 5)} fill="currentColor" opacity=".55" stroke="none" />
+          </>
+        ),
+        glowheart: (
+          <>
+            <path d={heartPath(50, 54, 23)} fill="currentColor" opacity=".22" stroke="none" />
+            <path d={heartPath(50, 54, 23)} />
+            <path d="M50 20 V9 M79 30 l7 -7 M21 30 l-7 -7 M86 54 h10 M14 54 h-10" opacity=".7" />
+            <path d={sparklePath(80, 78, 5)} fill="currentColor" opacity=".5" stroke="none" />
+            <path d={sparklePath(18, 20, 4)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+        letter: (
+          <>
+            <rect x="21" y="20" width="58" height="66" rx="7" fill="currentColor" opacity=".12" />
+            <rect x="21" y="20" width="58" height="66" rx="7" />
+            <path d="M32 38 h36 M32 50 h36 M32 62 h22" opacity=".85" />
+            <path d={heartPath(62, 73, 7)} fill="currentColor" opacity=".4" stroke="none" />
+            <path d={heartPath(62, 73, 7)} />
+            <path d={sparklePath(85, 17, 6)} fill="currentColor" opacity=".6" stroke="none" />
+            <path d={sparklePath(13, 70, 5)} fill="currentColor" opacity=".5" stroke="none" />
+          </>
+        ),
+      };
+
+      function Doodle({ name }) {
+        const content = doodles[name] || doodles.sparkles;
+        return (
+          <svg
+            className="doodle"
+            viewBox="0 0 100 100"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            {content}
+          </svg>
+        );
+      }
+
+      /* ===========================================================
+         Floating decorations
+         =========================================================== */
+      function makeRandom(seed) {
+        let s = seed;
+        return () => {
+          s = (s * 1103515245 + 12345) % 2147483648;
+          return s / 2147483648;
+        };
+      }
+
+      function FloatingDecorations({ reduce }) {
+        const items = useMemo(() => {
+          const rand = makeRandom(20240517);
+          return Array.from({ length: 18 }, (_, i) => ({
+            id: i,
+            type: rand() > 0.5 ? 'heart' : 'sparkle',
+            left: 2 + rand() * 96,
+            top: 2 + rand() * 94,
+            size: 10 + rand() * 18,
+            duration: 11 + rand() * 12,
+            delay: rand() * -14,
+            rotate: rand() * 40 - 20,
+          }));
+        }, []);
+
+        if (reduce) return null;
+
+        return (
+          <div className="floating-decorations" aria-hidden="true">
+            {items.map((item) => (
+              <span
+                key={item.id}
+                className={`float-item float-${item.type}`}
+                style={{
+                  left: `${item.left}%`,
+                  top: `${item.top}%`,
+                  width: item.size,
+                  height: item.size,
+                  animationDuration: `${item.duration}s`,
+                  animationDelay: `${item.delay}s`,
+                  ['--tilt']: `${item.rotate}deg`,
+                }}
+              >
+                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="3">
+                  {item.type === 'heart' ? (
+                    <path d={heartPath(50, 52, 34)} fill="currentColor" stroke="none" />
+                  ) : (
+                    <path d={sparklePath(50, 50, 42)} fill="currentColor" stroke="none" />
+                  )}
+                </svg>
+              </span>
+            ))}
+          </div>
+        );
+      }
+
+      function ChapterPetals() {
+        const petals = useMemo(() => {
+          const rand = makeRandom(77123);
+          return Array.from({ length: 7 }, (_, i) => ({
+            id: i,
+            left: 5 + rand() * 90,
+            delay: 0.25 + i * 0.28,
+            duration: 3 + rand() * 2,
+            drift: rand() * 60 - 30,
+            size: 8 + rand() * 7,
+            rotate: rand() * 240,
+          }));
+        }, []);
+
+        return (
+          <div className="chapter-petals" aria-hidden="true">
+            {petals.map((p) => (
+              <motion.span
+                key={p.id}
+                className="chapter-petal"
+                style={{ left: `${p.left}%`, width: p.size, height: p.size * 1.5 }}
+                initial={{ y: -40, opacity: 0, x: 0, rotate: 0 }}
+                animate={{ y: 420, opacity: [0, 0.5, 0.5, 0], x: p.drift, rotate: p.rotate }}
+                transition={{ duration: p.duration, delay: p.delay, ease: 'easeInOut' }}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      /* ===========================================================
+         Progress
+         =========================================================== */
+      function ProgressIndicator({ current, total, reduce }) {
+        const pad = (n) => String(n).padStart(2, '0');
+        const percentage = (current / total) * 100;
+        return (
+          <div className="progress">
+            <span className="progress-count" aria-hidden="true">
+              {pad(current)} / {pad(total)}
+            </span>
+            <div
+              className="progress-track"
+              role="progressbar"
+              aria-valuemin={1}
+              aria-valuemax={total}
+              aria-valuenow={current}
+              aria-label={`Page ${current} of ${total}`}
+            >
+              <motion.span
+                className="progress-fill"
+                initial={false}
+                animate={{ width: `${percentage}%` }}
+                transition={{ duration: reduce ? 0 : 0.45, ease: [0.22, 0.61, 0.36, 1] }}
+              />
+            </div>
+          </div>
+        );
+      }
+
+      /* ===========================================================
+         Surprise note
+         =========================================================== */
+      function SurpriseNote({ note, reduce }) {
+        const [open, setOpen] = useState(false);
+        const wrapRef = useRef(null);
+        const noteId = useId();
+
+        useEffect(() => {
+          if (!open) return undefined;
+          const onPointerDown = (event) => {
+            if (wrapRef.current && !wrapRef.current.contains(event.target)) setOpen(false);
+          };
+          const onKeyDown = (event) => {
+            if (event.key === 'Escape') setOpen(false);
+          };
+          document.addEventListener('mousedown', onPointerDown);
+          document.addEventListener('keydown', onKeyDown);
+          return () => {
+            document.removeEventListener('mousedown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+          };
+        }, [open]);
+
+        return (
+          <div className="surprise" ref={wrapRef}>
+            <button
+              type="button"
+              className="surprise-trigger"
+              aria-expanded={open}
+              aria-controls={noteId}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <Star size={15} aria-hidden="true" />
+              <span>tap for a tiny surprise</span>
+            </button>
+            <AnimatePresence>
+              {open && (
+                <motion.div
+                  id={noteId}
+                  role="note"
+                  className="surprise-pop"
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                  transition={{ duration: reduce ? 0 : 0.28, ease: 'easeOut' }}
+                >
+                  {note}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      }
+
+      /* ===========================================================
+         StoryCard
+         =========================================================== */
+      const sharedTransition = (reduce) => ({
+        duration: reduce ? 0 : 0.36,
+        ease: [0.22, 0.61, 0.36, 1],
+      });
+
+      const buildVariants = (reduce) =>
+        reduce
+          ? { enter: { opacity: 0 }, center: { opacity: 1 }, exit: { opacity: 0 } }
+          : {
+              enter: (dir) => ({
+                opacity: 0,
+                y: dir > 0 ? 28 : -24,
+                rotate: dir > 0 ? 1.1 : -1.1,
+                scale: 0.985,
+              }),
+              center: { opacity: 1, y: 0, rotate: 0, scale: 1 },
+              exit: (dir) => ({
+                opacity: 0,
+                y: dir > 0 ? -24 : 28,
+                rotate: dir > 0 ? -1.2 : 1.2,
+                scale: 0.99,
+              }),
+            };
+
+      function StoryCard({ page, index, total, direction, reduce, onRestart, onKeep }) {
+        const isLast = index === total - 1;
+        const variants = buildVariants(reduce);
+
+        return (
+          <motion.article
+            className={`story-card accent-${page.accent}`}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={sharedTransition(reduce)}
+            aria-roledescription="slide"
+            aria-label={`Page ${index + 1} of ${total}: ${page.title}`}
+          >
+            <span className="washi" aria-hidden="true" />
+
+            <div className="card-doodle">
+              <Doodle name={page.doodle} />
+            </div>
+
+            <h2 className="card-title">{page.title}</h2>
+
+            <svg className="title-underline" viewBox="0 0 160 12" aria-hidden="true">
+              <motion.path
+                d="M3 8 Q 22 2 44 7 T 84 6 T 124 7 T 157 5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0.9 }}
+                animate={{ pathLength: 1 }}
+                transition={{
+                  duration: reduce ? 0 : 0.85,
+                  delay: reduce ? 0 : 0.25,
+                  ease: 'easeInOut',
+                }}
+              />
+            </svg>
+
+            <div className="card-body">
+              {page.paragraphs.map((text, i) => (
+                <p key={i}>{text}</p>
+              ))}
+              {page.signature && <p className="card-signature">{page.signature}</p>}
+            </div>
+
+            {page.surprise && <SurpriseNote note={page.surprise} reduce={reduce} />}
+
+            {isLast && (
+              <div className="final-actions">
+                <button type="button" className="btn" onClick={onRestart}>
+                  Read the little notes again ↺
+                </button>
+                <button type="button" className="btn btn-primary" onClick={onKeep}>
+                  Keep this little reminder ♡
+                </button>
+              </div>
+            )}
+          </motion.article>
+        );
+      }
+
+      /* ===========================================================
+         Intro envelope
+         =========================================================== */
+      function IntroEnvelope({ onOpen, reduce }) {
+        const [opening, setOpening] = useState(false);
+
+        const handleOpen = useCallback(() => {
+          if (opening) return;
+          setOpening(true);
+          window.setTimeout(onOpen, reduce ? 120 : 1000);
+        }, [opening, onOpen, reduce]);
+
+        return (
+          <motion.section
+            className="intro"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: reduce ? 0 : -18 }}
+            transition={{ duration: reduce ? 0 : 0.35, ease: 'easeOut' }}
+          >
+            <div className="intro-inner">
+              <motion.p
+                className="eyebrow"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.08 }}
+              >
+                a little something, just because
+              </motion.p>
+
+              <motion.h1
+                className="intro-title"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.65, delay: reduce ? 0 : 0.15 }}
+              >
+                A tiny little world,
+                <br />
+                made just for you <span className="intro-heart">♡</span>
+              </motion.h1>
+
+              <motion.p
+                className="intro-sub"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.65, delay: reduce ? 0 : 0.25 }}
+              >
+                Hey, Aarya. I made something for you.
+              </motion.p>
+
+              <motion.p
+                className="intro-sub intro-sub-small"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.65, delay: reduce ? 0 : 0.32 }}
+              >
+                It’s nothing huge, just a little reminder that you matter.
+              </motion.p>
+
+              <motion.button
+                type="button"
+                className={`envelope${opening ? ' is-open' : ''}`}
+                onClick={handleOpen}
+                aria-label="Open your little letter"
+                initial={{ opacity: 0, y: 22, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={
+                  reduce
+                    ? { duration: 0 }
+                    : { type: 'spring', stiffness: 160, damping: 18, delay: 0.38 }
+                }
+              >
+                <span className="env-back" aria-hidden="true" />
+                <span className="env-letter" aria-hidden="true">
+                  <span className="env-line" />
+                  <span className="env-line short" />
+                  <span className="env-line" />
+                  <span className="env-line shorter" />
+                  <span className="env-sign">for Aarya ♡</span>
+                </span>
+                <span className="env-pocket" aria-hidden="true" />
+                <span className="env-flap" aria-hidden="true" />
+                <span className="env-seal" aria-hidden="true">♡</span>
+              </motion.button>
+
+              <motion.button
+                type="button"
+                className="btn btn-primary intro-btn"
+                onClick={handleOpen}
+                disabled={opening}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.55 }}
+              >
+                {opening ? 'Opening your letter…' : 'Open your little letter ♡'}
+              </motion.button>
+            </div>
+          </motion.section>
+        );
+      }
+
+      /* ===========================================================
+         Final keepsake
+         =========================================================== */
+      function FinalKeepsake({ onClose, reduce }) {
+        const closeRef = useRef(null);
+
+        useEffect(() => {
+          closeRef.current?.focus();
+          const onKeyDown = (event) => {
+            if (event.key === 'Escape') onClose();
+          };
+          document.addEventListener('keydown', onKeyDown);
+          return () => document.removeEventListener('keydown', onKeyDown);
+        }, [onClose]);
+
+        return (
+          <motion.div
+            className="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.25 }}
+            onClick={onClose}
+          >
+            <motion.div
+              className="keepsake"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="keepsake-title"
+              onClick={(event) => event.stopPropagation()}
+              initial={{ opacity: 0, y: 26, scale: 0.96, rotate: -1 }}
+              animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, y: 14, scale: 0.97 }}
+              transition={
+                reduce ? { duration: 0 } : { type: 'spring', stiffness: 220, damping: 24 }
+              }
+            >
+              <span className="keepsake-tape" aria-hidden="true" />
+              <Heart className="keepsake-heart" size={24} aria-hidden="true" />
+              <h2 id="keepsake-title" className="keepsake-title">
+                A little reminder to keep
+              </h2>
+              <p className="keepsake-text">
+                On days when everything feels a little too much, take a breath and remember:
+                you don’t have to do it all today. ♡
+              </p>
+              <p className="keepsake-sign">— for Aarya, always</p>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onClose}
+                ref={closeRef}
+              >
+                Back to the letter
+              </button>
+            </motion.div>
+          </motion.div>
+        );
+      }
+
+      /* ===========================================================
+         Restart confirm
+         =========================================================== */
+      function RestartConfirm({ onCancel, onConfirm, reduce }) {
+        const cancelRef = useRef(null);
+
+        useEffect(() => {
+          cancelRef.current?.focus();
+          const onKeyDown = (event) => {
+            if (event.key === 'Escape') onCancel();
+          };
+          document.addEventListener('keydown', onKeyDown);
+          return () => document.removeEventListener('keydown', onKeyDown);
+        }, [onCancel]);
+
+        return (
+          <motion.div
+            className="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.22 }}
+            onClick={onCancel}
+          >
+            <motion.div
+              className="dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="restart-title"
+              onClick={(event) => event.stopPropagation()}
+              initial={{ opacity: 0, y: 18, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
+              transition={
+                reduce ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 24 }
+              }
+            >
+              <h2 id="restart-title">Start over from the beginning?</h2>
+              <p className="dialog-text">
+                The little notes will go back to page one. Nothing is lost. ♡
+              </p>
+              <div className="dialog-actions">
+                <button type="button" className="btn" onClick={onCancel} ref={cancelRef}>
+                  Not yet
+                </button>
+                <button type="button" className="btn btn-primary" onClick={onConfirm}>
+                  Yes, start over
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        );
+      }
+
+      /* ===========================================================
+         Cursor sparkle
+         =========================================================== */
+      function CursorSparkle({ enabled }) {
+        const [sparkles, setSparkles] = useState([]);
+        const lastRef = useRef(0);
+
+        useEffect(() => {
+          if (!enabled) {
+            setSparkles([]);
+            return undefined;
+          }
+          const isFinePointer =
+            window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+          if (!isFinePointer) return undefined;
+
+          const onMove = (event) => {
+            const now = performance.now();
+            if (now - lastRef.current < 80) return;
+            lastRef.current = now;
+
+            const id = `${now}-${Math.random().toString(36).slice(2, 7)}`;
+            const size = 6 + Math.random() * 7;
+
+            setSparkles((current) => [
+              ...current.slice(-7),
+              { id, x: event.clientX, y: event.clientY, size },
+            ]);
+
+            window.setTimeout(() => {
+              setSparkles((current) => current.filter((s) => s.id !== id));
+            }, 780);
+          };
+
+          window.addEventListener('mousemove', onMove, { passive: true });
+          return () => window.removeEventListener('mousemove', onMove);
+        }, [enabled]);
+
+        if (!enabled) return null;
+
+        return (
+          <div className="cursor-sparkles" aria-hidden="true">
+            {sparkles.map((sparkle) => (
+              <motion.span
+                key={sparkle.id}
+                className="cursor-sparkle"
+                style={{
+                  left: sparkle.x,
+                  top: sparkle.y,
+                  width: sparkle.size,
+                  height: sparkle.size,
+                  marginLeft: -sparkle.size / 2,
+                  marginTop: -sparkle.size / 2,
+                }}
+                initial={{ opacity: 0.65, scale: 0.4 }}
+                animate={{ opacity: 0, scale: 1.15, y: -16 }}
+                transition={{ duration: 0.78, ease: 'easeOut' }}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      /* ===========================================================
+         App
+         =========================================================== */
+      function App() {
+        const [screen, setScreen] = useState('intro');
+        const [index, setIndex] = useState(0);
+        const [direction, setDirection] = useState(1);
+        const [keepsakeOpen, setKeepsakeOpen] = useState(false);
+        const [confirmOpen, setConfirmOpen] = useState(false);
+
+        const [reduceEffects, setReduceEffects] = useState(() => {
+          if (typeof window === 'undefined' || !window.matchMedia) return false;
+          return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        });
+
+        const navLock = useRef(false);
+
+        useEffect(() => {
+          document.documentElement.classList.toggle('reduce-motion', reduceEffects);
+        }, [reduceEffects]);
+
+        const navigate = useCallback(
+          (nextIndex, dir) => {
+            if (navLock.current) return;
+            if (nextIndex < 0 || nextIndex >= TOTAL_PAGES) return;
+            navLock.current = true;
+            setDirection(dir);
+            setIndex(nextIndex);
+            window.setTimeout(
+              () => {
+                navLock.current = false;
+              },
+              reduceEffects ? 250 : 720
+            );
+          },
+          [reduceEffects]
+        );
+
+        const goNext = useCallback(() => navigate(index + 1, 1), [index, navigate]);
+        const goBack = useCallback(() => navigate(index - 1, -1), [index, navigate]);
+
+        const handleRestart = useCallback(() => {
+          setConfirmOpen(false);
+          setKeepsakeOpen(false);
+          navLock.current = false;
+          setDirection(-1);
+          setIndex(0);
+        }, []);
+
+        const handleReadAgain = useCallback(() => {
+          navLock.current = false;
+          setDirection(-1);
+          setIndex(0);
+        }, []);
+
+        useEffect(() => {
+          if (screen !== 'story') return undefined;
+          const onKeyDown = (event) => {
+            if (confirmOpen || keepsakeOpen) return;
+            if (event.key === 'ArrowRight') {
+              event.preventDefault();
+              goNext();
+            } else if (event.key === 'ArrowLeft') {
+              event.preventDefault();
+              goBack();
+            }
+          };
+          window.addEventListener('keydown', onKeyDown);
+          return () => window.removeEventListener('keydown', onKeyDown);
+        }, [screen, goNext, goBack, confirmOpen, keepsakeOpen]);
+
+        const page = pages[index];
+
+        return (
+          <>
+            <FloatingDecorations reduce={reduceEffects} />
+            <CursorSparkle enabled={!reduceEffects} />
+
+            <AnimatePresence mode="wait" initial={false}>
+              {screen === 'intro' && (
+                <IntroEnvelope
+                  key="intro"
+                  reduce={reduceEffects}
+                  onOpen={() => {
+                    setDirection(1);
+                    setIndex(0);
+                    setScreen('story');
+                  }}
+                />
+              )}
+
+              {screen === 'story' && (
+                <motion.main
+                  key="story"
+                  className="story"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: reduceEffects ? 0 : 0.4, ease: 'easeOut' }}
+                >
+                  <div className="topbar">
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      onClick={() => setConfirmOpen(true)}
+                      aria-label="Start over from the beginning"
+                      title="Start over"
+                    >
+                      <Home size={18} aria-hidden="true" />
+                    </button>
+
+                    <p className="topbar-note" aria-hidden="true">for Aarya ♡</p>
+
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      onClick={() => setReduceEffects((v) => !v)}
+                      aria-pressed={reduceEffects}
+                      aria-label={
+                        reduceEffects
+                          ? 'Turn gentle animations back on'
+                          : 'Reduce animations'
+                      }
+                      title={reduceEffects ? 'Motion: off' : 'Motion: on'}
+                    >
+                      <Sparkles size={18} aria-hidden="true" />
+                    </button>
+                  </div>
+
+                  <ProgressIndicator
+                    current={index + 1}
+                    total={TOTAL_PAGES}
+                    reduce={reduceEffects}
+                  />
+
+                  <div className="stage">
+                    {!reduceEffects && <ChapterPetals key={`petals-${index}`} />}
+
+                    <AnimatePresence mode="wait" custom={direction} initial={false}>
+                      <StoryCard
+                        key={page.id}
+                        page={page}
+                        index={index}
+                        total={TOTAL_PAGES}
+                        direction={direction}
+                        reduce={reduceEffects}
+                        onRestart={handleReadAgain}
+                        onKeep={() => setKeepsakeOpen(true)}
+                      />
+                    </AnimatePresence>
+                  </div>
+
+                  <nav className="card-nav" aria-label="Story navigation">
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={goBack}
+                      disabled={index === 0}
+                    >
+                      ← Back
+                    </button>
+
+                    {index < TOTAL_PAGES - 1 ? (
+                      <button type="button" className="btn btn-primary" onClick={goNext}>
+                        Next little note →
+                      </button>
+                    ) : (
+                      <span className="nav-spacer" aria-hidden="true" />
+                    )}
+                  </nav>
+
+                  <p className="sr-only" aria-live="polite">
+                    Page {index + 1} of {TOTAL_PAGES}
+                  </p>
+                </motion.main>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {keepsakeOpen && (
+                <FinalKeepsake
+                  key="keepsake"
+                  reduce={reduceEffects}
+                  onClose={() => setKeepsakeOpen(false)}
+                />
+              )}
+              {confirmOpen && (
+                <RestartConfirm
+                  key="confirm"
+                  reduce={reduceEffects}
+                  onCancel={() => setConfirmOpen(false)}
+                  onConfirm={handleRestart}
+                />
+              )}
+            </AnimatePresence>
+          </>
+        );
+      }
+
+      createRoot(document.getElementById('root')).render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+    </script>
+  </body>
+</html>
